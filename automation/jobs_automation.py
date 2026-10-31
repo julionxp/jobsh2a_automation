@@ -393,7 +393,7 @@ def run(playwright: Playwright, search: str, begin_after: str, headless: bool,) 
     all_job_links: list[dict[str, Any]] = []
     seen_case_numbers: set[str] = set()
 
-    for search_term in resolve_search_terms(search):
+    for search_term in ([search] if search else [None]):
         job_links = get_job_links(
             session=session,
             begin_after=begin_after,
