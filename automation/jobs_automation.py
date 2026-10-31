@@ -1,6 +1,10 @@
 import argparse
 import asyncio
 import re
+import io
+import json
+import zipfile
+from zoneinfo import ZoneInfo
 from datetime import datetime, timedelta
 from threading import Thread
 from typing import Any
@@ -11,7 +15,6 @@ from sqlalchemy import select, text
 
 from automation.ia_send_email import identify_job_category
 from automation.job_scoring import (
-    _detect_h2b_signals,
     compute_job_score,
     get_priority_label,
     get_score_reasons,
@@ -22,24 +25,9 @@ from schemas.jobs_automation_schema import JobAutomationSchema
 
 
 BASE_URL = "https://seasonaljobs.dol.gov"
-API_URL = ("https://api.seasonaljobs.dol.gov/""datahub/search?api-version=2020-06-30")
+FEED_URL = "https://api.seasonaljobs.dol.gov/datahub-search/sjCaseData/zip/jo/{feed_date}"
 EMAIL_PATTERN = re.compile(r"[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}", re.I,)
-DEFAULT_SEARCH_TERMS = [
-    "housekeeper",
-    "hotel",
-    "resort",
-    "ski resort",
-    "landscaping",
-    "cook",
-    "dishwasher",
-    "restaurant",
-    "server",
-    "warehouse",
-    "material handler",
-    "seafood",
-    "maintenance",
-    "groundskeeper",
-]
+DEFAULT_SEARCH_TERMS = ["farmworker", "farm laborer", "agricultural worker", "harvest", "crop", "nursery", "greenhouse", "livestock", "ranch", "orchard", "fruit picking", "vegetable", "field worker"]
 
 
 def resolve_search_terms(search: str | None) -> list[str]:
@@ -54,116 +42,124 @@ def resolve_search_terms(search: str | None) -> list[str]:
     return custom_terms or DEFAULT_SEARCH_TERMS
 
 
-def get_job_links(session: requests.Session, begin_after: str, search: str,) -> list[dict[str, Any]]:
-    """
-    Busca vagas em uma janela dinâmica de até 180 dias e retorna os registros
-    completos para persistência e ranking. A data de início é apenas uma âncora;
-    a priorização real vem da recência e da janela H-2B.
-    """
+def _normalize_key(value: str) -> str:
+    return re.sub(r"[^a-z0-9]", "", str(value).casefold())
 
-    print("\n>>> BUSCANDO VAGAS PELA API...")
 
-    today = datetime.utcnow().date()
-    try:
-        request_date = datetime.strptime(begin_after, "%m/%d").date()
-    except ValueError:
-        raise ValueError("A data deve estar no formato MM/DD. Exemplo: 10/01")
+def _flatten_record(value: Any) -> dict[str, Any]:
+    result = {}
+    if isinstance(value, dict):
+        for key, item in value.items():
+            if isinstance(item, dict):
+                result.update(_flatten_record(item))
+            else:
+                result[_normalize_key(key)] = item
+    return result
 
-    anchor_date = max(today, request_date.replace(year=today.year))
-    window_start = anchor_date
-    window_end = anchor_date + timedelta(days=180)
 
-    filter_prefix = "active eq true and display eq true "
-    filter_expr = (
-        f"{filter_prefix}"
-        f"and begin_date ge {window_start.strftime('%Y-%m-%dT00:00:00.000Z')} "
-        f"and begin_date le {window_end.strftime('%Y-%m-%dT00:00:00.000Z')}"
-    )
+def _pick(record: dict[str, Any], *aliases: str) -> Any:
+    for alias in aliases:
+        value = record.get(_normalize_key(alias))
+        if value not in (None, ""):
+            return value
+    return None
 
-    top = 40
-    skip = 0
-    all_jobs = []
 
-    while True:
-        payload = {
-            "search": search,
-            "searchFields": (
-                "job_title, job_duties, soc_code_id, soc_title, "
-                "case_number, worksite_city, worksite_state, "
-                "employer_business_name, employer_trade_name"
-            ),
-            "filter": filter_expr,
-            "orderby": "search.score() desc",
-            "top": top,
-            "skip": skip,
-            "select": (
-                "active,case_number,job_title,begin_date,end_date,"
-                "basic_rate_from,basic_rate_to,pay_range_desc,"
-                "employer_trade_name,employer_business_name,"
-                "worksite_city,worksite_state"
-            ),
-            "count": True,
-            "facets": [
-                "job_title, count:4, sort:count"
-            ],
-        }
-
-        print(f">>> Buscando vagas {skip + 1} até {skip + top}...")
-
-        response = session.post(API_URL, json=payload, timeout=30,)
-        response.raise_for_status()
-
-        data = response.json()
-        total = data.get("@odata.count", 0)
-        jobs = data.get("value", [])
-
-        print(f">>> API retornou {len(jobs)} vagas (total disponível: {total})")
-        all_jobs.extend(jobs)
-
-        if not jobs:
-            break
-
-        skip += top
-        if skip >= total:
-            break
-
-    print(f"\n>>> TOTAL DE VAGAS COLETADAS: {len(all_jobs)}")
-
-    records: list[dict[str, Any]] = []
-    seen: set[str] = set()
-
-    for job in all_jobs:
-        case_number = job.get("case_number")
-        if not case_number:
-            continue
-
-        normalized = str(case_number).strip()
-        if normalized in seen:
-            continue
-        seen.add(normalized)
-
-        records.append({
-            "title": job.get("job_title") or "",
-            "case_number": normalized,
-            "url": f"{BASE_URL}/jobs/{normalized}",
-            "begin_date": job.get("begin_date"),
-            "end_date": job.get("end_date"),
-            "first_date_of_need": job.get("first_date_of_need") or job.get("date_of_need") or job.get("need_date") or job.get("need_start_date") or job.get("begin_date"),
-            "published_date": job.get("published_date") or job.get("posted_date") or job.get("date_posted") or job.get("publication_date") or job.get("created_date"),
-            "basic_rate_from": job.get("basic_rate_from"),
-            "basic_rate_to": job.get("basic_rate_to"),
-            "pay_range_desc": job.get("pay_range_desc"),
-            "employer_trade_name": job.get("employer_trade_name"),
-            "employer_business_name": job.get("employer_business_name"),
-            "worksite_city": job.get("worksite_city"),
-            "worksite_state": job.get("worksite_state"),
-            "job_openings": job.get("job_openings") or job.get("positions_available") or job.get("openings") or job.get("number_of_positions"),
-            "positions_available": job.get("job_openings") or job.get("positions_available") or job.get("openings") or job.get("number_of_positions"),
-            "search_term": job.get("search_term"),
-        })
-
-    print(f">>> TOTAL DE REGISTROS GERADOS: {len(records)}")
+def _feed_records(payload: Any) -> list[dict[str, Any]]:
+    records = []
+    if isinstance(payload, list):
+        for item in payload:
+            records.extend(_feed_records(item))
+    elif isinstance(payload, dict):
+        flat = _flatten_record(payload)
+        if _pick(flat, "case_number", "eta_case_number", "job_order_number", "job_order_case_number", "caseNumber", "jobOrderNumber"):
+            records.append(flat)
+        else:
+            for value in payload.values():
+                if isinstance(value, (dict, list)):
+                    records.extend(_feed_records(value))
     return records
+
+
+def _normalize_feed_job(raw: dict[str, Any]) -> dict[str, Any] | None:
+    case = _pick(raw, "case_number", "eta_case_number", "job_order_number", "job_order_case_number", "caseNumber", "jobOrderNumber")
+    if not case:
+        return None
+    title = _pick(raw, "job_title", "occupation_title", "soc_title", "jobtitle") or "Agricultural Worker"
+    description = _pick(raw, "job_duties", "duties", "job_description", "description") or ""
+    employer = _pick(raw, "employer_trade_name", "employer_business_name", "employer_name", "business_name")
+    email = _pick(raw, "email_address_to_apply", "email_to_apply", "recruitment_email", "email")
+    phone = _pick(raw, "telephone_number_to_apply", "phone_to_apply", "recruitment_phone", "phone")
+    duties = str(description)
+    if email:
+        duties += f"\\nRecruitment email: {email}"
+    if phone:
+        duties += f"\\nRecruitment phone: {phone}"
+    openings = _pick(raw, "job_openings", "number_of_workers_requested", "workers_requested", "positions_available", "openings")
+    begin = _pick(raw, "begin_date", "employment_begin_date", "start_date", "first_date_of_need")
+    return {
+        "title": str(title), "case_number": str(case).strip(),
+        "url": f"{BASE_URL}/jobs/{str(case).strip()}",
+        "begin_date": begin, "end_date": _pick(raw, "end_date", "employment_end_date"),
+        "first_date_of_need": begin,
+        "published_date": _pick(raw, "date_posted", "posted_date", "published_date", "date_submitted", "submission_date", "last_updated", "updated_date"),
+        "basic_rate_from": _pick(raw, "basic_rate_from", "wage_rate_from", "offered_wage_rate_from", "wage_from"),
+        "basic_rate_to": _pick(raw, "basic_rate_to", "wage_rate_to", "offered_wage_rate_to", "wage_to"),
+        "pay_range_desc": _pick(raw, "pay_range_desc", "wage_description", "wage_rate"),
+        "employer_trade_name": employer, "employer_business_name": employer,
+        "worksite_city": _pick(raw, "worksite_city", "city", "place_of_employment_city"),
+        "worksite_state": _pick(raw, "worksite_state", "state", "place_of_employment_state"),
+        "job_openings": openings, "positions_available": openings,
+        "description": duties, "emails": str(email) if email else None,
+        "search_term": "H-2A 790/790A feed",
+        "job_category": identify_job_category(str(title), duties),
+    }
+
+
+def get_job_links(session: requests.Session, begin_after: str, search: str | None) -> list[dict[str, Any]]:
+    """Baixa o feed oficial 790/790A: ordens H-2A enviadas/atualizadas nos últimos 20 dias."""
+    print("\\n>>> BAIXANDO FEED OFICIAL H-2A 790/790A...")
+    today_et = datetime.now(ZoneInfo("America/New_York")).date()
+    response = None
+    errors = []
+    for offset in range(2):
+        day = (today_et - timedelta(days=offset)).isoformat()
+        try:
+            candidate = session.get(FEED_URL.format(feed_date=day), timeout=90)
+            candidate.raise_for_status()
+            if not candidate.content:
+                raise ValueError("Feed vazio")
+            response = candidate
+            print(f">>> Feed recebido: {day}")
+            break
+        except Exception as exc:
+            errors.append(f"{day}: {exc}")
+    if response is None:
+        raise RuntimeError("Falha ao baixar feed H-2A 790/790A: " + " | ".join(errors))
+    try:
+        with zipfile.ZipFile(io.BytesIO(response.content)) as archive:
+            names = [name for name in archive.namelist() if name.lower().endswith(".json")]
+            if not names:
+                raise ValueError(f"ZIP sem JSON. Conteúdo: {archive.namelist()[:8]}")
+            payload = json.loads(archive.read(names[0]).decode("utf-8-sig"))
+    except (zipfile.BadZipFile, json.JSONDecodeError, UnicodeDecodeError) as exc:
+        raise RuntimeError(f"Falha ao interpretar ZIP/JSON do feed: {exc}") from exc
+    raw_records = _feed_records(payload)
+    print(f">>> Registros identificados no feed: {len(raw_records)}")
+    terms = [term.casefold() for term in resolve_search_terms(search)] if search else []
+    records, seen = [], set()
+    for raw in raw_records:
+        item = _normalize_feed_job(raw)
+        if not item or item["case_number"] in seen:
+            continue
+        seen.add(item["case_number"])
+        searchable = " ".join(str(item.get(k) or "") for k in ("title", "description", "employer_trade_name", "worksite_city", "worksite_state")).casefold()
+        if terms and not any(term in searchable for term in terms):
+            continue
+        records.append(item)
+    print(f">>> ORDENS H-2A NOVAS/ATUALIZADAS: {len(records)}")
+    return records
+
 
 
 def extract_job(page: Page, url: str, api_job: dict[str, Any] | None = None) -> dict[str, Any]:
@@ -263,18 +259,12 @@ def extract_job(page: Page, url: str, api_job: dict[str, Any] | None = None) -> 
         "job_category": identify_job_category(title or api_job.get("title") or "", description),
     }
 
-    h2b_relevant, out_of_country, h2b_status, _ = (lambda: (
-        (False, False, "UNKNOWN", [])
-    ))()
-    try:
-        from automation.job_scoring import _detect_h2b_signals, get_score_reasons
-        h2b_relevant, out_of_country, h2b_status, _ = _detect_h2b_signals(result)
-        result["score_reasons"] = get_score_reasons(result)
-    except Exception:
-        result["score_reasons"] = "No scoring breakdown available"
-    result["h2b_relevant"] = h2b_relevant
-    result["out_of_country"] = out_of_country
-    result["h2b_status"] = h2b_status
+    from automation.job_scoring import get_score_reasons
+    result["h2a_relevant"] = True
+    result["h2b_relevant"] = False
+    result["out_of_country"] = False
+    result["h2b_status"] = "H2A_ORDER"
+    result["score_reasons"] = get_score_reasons(result)
     result["job_score"] = compute_job_score(result)
     result["priority"] = get_priority_label(result["job_score"])
     return result
@@ -313,6 +303,7 @@ async def create_tables() -> None:
             "positions_available": "ALTER TABLE jobs_automation ADD COLUMN IF NOT EXISTS positions_available INTEGER",
             "job_openings": "ALTER TABLE jobs_automation ADD COLUMN IF NOT EXISTS job_openings INTEGER",
             "h2b_relevant": "ALTER TABLE jobs_automation ADD COLUMN IF NOT EXISTS h2b_relevant BOOLEAN",
+            "h2a_relevant": "ALTER TABLE jobs_automation ADD COLUMN IF NOT EXISTS h2a_relevant BOOLEAN",
             "out_of_country": "ALTER TABLE jobs_automation ADD COLUMN IF NOT EXISTS out_of_country BOOLEAN",
             "h2b_status": "ALTER TABLE jobs_automation ADD COLUMN IF NOT EXISTS h2b_status VARCHAR(50)",
             "job_score": "ALTER TABLE jobs_automation ADD COLUMN IF NOT EXISTS job_score INTEGER",
@@ -337,10 +328,10 @@ async def save_job(row: dict[str, str]) -> None:
         row.get("description"),
     )
 
-    h2b_relevant, out_of_country, h2b_status, _ = _detect_h2b_signals(row)
-    row["h2b_relevant"] = h2b_relevant
-    row["out_of_country"] = out_of_country
-    row["h2b_status"] = h2b_status
+    row["h2a_relevant"] = True
+    row["h2b_relevant"] = False
+    row["out_of_country"] = False
+    row["h2b_status"] = "H2A_ORDER"
     row["score_reasons"] = get_score_reasons(row)
     row["job_score"] = compute_job_score(row)
     row["priority"] = get_priority_label(row["job_score"])
@@ -466,11 +457,19 @@ def run(playwright: Playwright, search: str, begin_after: str, headless: bool,) 
 
             try:
 
-                row = extract_job(
-                    page,
-                    url,
-                    job_data,
-                )
+                try:
+                    row = extract_job(page, url, job_data)
+                except Exception as page_error:
+                    print(f">>> Página indisponível; usando dados do feed: {page_error}")
+                    row = dict(job_data)
+                    row.setdefault("emails", None)
+                    row["h2a_relevant"] = True
+                    row["h2b_relevant"] = False
+                    row["out_of_country"] = False
+                    row["h2b_status"] = "H2A_ORDER"
+                    row["score_reasons"] = get_score_reasons(row)
+                    row["job_score"] = compute_job_score(row)
+                    row["priority"] = get_priority_label(row["job_score"])
 
                 if not row["case_number"]:
                     print(f"[{index}/{len(job_links)}] Vaga ignorada: case_number ausente")
@@ -539,7 +538,7 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help=(
             "Termo da vaga, empresa ou ocupação. "
-            "Se não informado, usa uma lista estratégica de termos H-2B/Hospitality/Warehouse."
+            "Se não informado, usa uma lista estratégica de termos H-2A agricultural jobs."
         ),
     )
 

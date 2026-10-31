@@ -26,6 +26,7 @@ class JobAutomationSchema(BaseModel):
     worksite_state: str | None = None
     positions_available: int | None = None
     job_openings: int | None = None
+    h2a_relevant: bool | None = True
     h2b_relevant: bool | None = None
     out_of_country: bool | None = None
     h2b_status: str | None = None
