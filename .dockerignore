@@ -1,10 +1,21 @@
-__pycache__
-*.py[cod]
-*$py.class
+# Secrets and local environment
+.env
+.env.*
+!.env.example
+assets/token.json
+assets/token*.json
+assets/client_secret*.json
+*credentials*.json
+
+# Personal documents and local artifacts
+assets/resumes/*.pdf
+assets/cover_letters/*.pdf
+logs/
 venv/
 .venv/
 env/
-*.egg-info/
-dist/
-build/
-.git   
+__pycache__/
+*.py[cod]
+*.log
+.git/
+.vscode/

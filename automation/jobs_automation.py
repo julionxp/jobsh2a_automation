@@ -10,8 +10,13 @@ from playwright.sync_api import Page, Playwright, sync_playwright
 from sqlalchemy import select, text
 
 from automation.ia_send_email import identify_job_category
-from automation.job_scoring import compute_job_score, get_priority_label
-from core.database import Base, Session, engine
+from automation.job_scoring import (
+    _detect_h2b_signals,
+    compute_job_score,
+    get_priority_label,
+    get_score_reasons,
+)
+from core.database import DBBaseModel, Session, engine
 from models.jobs_automation_model import JobAutomationModel
 from schemas.jobs_automation_schema import JobAutomationSchema
 
@@ -277,7 +282,7 @@ def extract_job(page: Page, url: str, api_job: dict[str, Any] | None = None) -> 
 
 async def create_tables() -> None:
     async with engine.begin() as connection:
-        await connection.run_sync(Base.metadata.create_all)
+        await connection.run_sync(DBBaseModel.metadata.create_all)
         columns = await connection.execute(text("""
             SELECT column_name
             FROM information_schema.columns
@@ -324,23 +329,19 @@ async def save_job(row: dict[str, str]) -> None:
     """Persiste uma vaga e atualiza registros existentes pelo case_number."""
     if isinstance(row.get("emails"), str):
         row["emails"] = row["emails"].strip() or None
+    if isinstance(row.get("description"), str):
+        row["description"] = row["description"].strip() or None
 
     row["job_category"] = row.get("job_category") or identify_job_category(
         row.get("title") or "",
         row.get("description"),
     )
 
-    h2b_relevant, out_of_country, h2b_status, _ = __import__(
-        "automation.job_scoring",
-        fromlist=["_detect_h2b_signals"],
-    )._detect_h2b_signals(row)
+    h2b_relevant, out_of_country, h2b_status, _ = _detect_h2b_signals(row)
     row["h2b_relevant"] = h2b_relevant
     row["out_of_country"] = out_of_country
     row["h2b_status"] = h2b_status
-    row["score_reasons"] = __import__(
-        "automation.job_scoring",
-        fromlist=["get_score_reasons"],
-    ).get_score_reasons(row)
+    row["score_reasons"] = get_score_reasons(row)
     row["job_score"] = compute_job_score(row)
     row["priority"] = get_priority_label(row["job_score"])
 
@@ -358,7 +359,9 @@ async def save_job(row: dict[str, str]) -> None:
             session.add(JobAutomationModel(**job_data.model_dump()))
         else:
             for field, value in job_data.model_dump().items():
-                setattr(job, field, value)
+                # Preserve dados anteriores quando a extração atual não encontrou o campo.
+                if value is not None:
+                    setattr(job, field, value)
 
         await session.commit()
 
@@ -554,6 +557,12 @@ def parse_args() -> argparse.Namespace:
         "--headless",
         action="store_true",
         help="Executa o navegador sem interface gráfica",
+    )
+
+    parser.add_argument(
+        "--send",
+        action="store_true",
+        help="Autoriza o envio real dos emails após a extração.",
     )
 
     return parser.parse_args()

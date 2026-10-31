@@ -9,25 +9,26 @@ OUT_OF_COUNTRY_CONFIRMED_KEYWORDS = (
     "out of country",
     "outside the united states",
     "outside the us",
-    "international applicants",
-    "international candidates",
-    "foreign workers",
-    "foreign worker",
+    "outside u.s.",
+    "applicants outside the united states",
+    "applicants outside the us",
+)
+OUT_OF_COUNTRY_POSSIBLE_KEYWORDS = (
     "h-2b",
     "h2b",
     "visa sponsorship",
     "visa sponsor",
-    "overseas",
-    "international",
-)
-OUT_OF_COUNTRY_POSSIBLE_KEYWORDS = (
-    "work authorization",
     "sponsorship available",
     "visa support",
-    "foreign national",
+    "international applicants",
+    "international candidates",
     "internationally",
-    "outside u.s.",
-    "outside us",
+    "international",
+    "foreign national",
+    "foreign worker",
+    "foreign workers",
+    "overseas",
+    "work authorization",
     "in-country and out of country",
 )
 IN_COUNTRY_ONLY_KEYWORDS = (
@@ -111,12 +112,12 @@ def _days_since(value: Any) -> int | None:
 def classify_out_of_country(text: str) -> str:
     normalized = text.casefold()
 
+    if any(keyword in normalized for keyword in IN_COUNTRY_ONLY_KEYWORDS):
+        return "IN_COUNTRY_ONLY"
     if any(keyword in normalized for keyword in OUT_OF_COUNTRY_CONFIRMED_KEYWORDS):
         return "OUT_OF_COUNTRY_CONFIRMED"
     if any(keyword in normalized for keyword in OUT_OF_COUNTRY_POSSIBLE_KEYWORDS):
         return "OUT_OF_COUNTRY_POSSIBLE"
-    if any(keyword in normalized for keyword in IN_COUNTRY_ONLY_KEYWORDS):
-        return "IN_COUNTRY_ONLY"
     return "NOT_MENTIONED"
 
 
@@ -162,7 +163,7 @@ def extract_structured_job_facts(job_title: str, description: str | None) -> dic
     return {
         "h2b_relevant": h2b_relevant,
         "out_of_country": out_of_country_status in {"OUT_OF_COUNTRY_CONFIRMED", "OUT_OF_COUNTRY_POSSIBLE"},
-        "h2b_status": "OPEN" if h2b_relevant or out_of_country_status == "OUT_OF_COUNTRY_CONFIRMED" else "UNKNOWN",
+        "h2b_status": "OPEN" if out_of_country_status == "OUT_OF_COUNTRY_CONFIRMED" else "UNKNOWN",
         "has_accommodation": has_accommodation,
         "is_hospitality": is_hospitality,
         "is_housekeeping": is_housekeeping,
@@ -190,7 +191,7 @@ def _detect_h2b_signals(job: dict[str, Any]) -> tuple[bool, bool, str, list[str]
         )
     )
     if h2b_relevant:
-        reasons.append("H-2B explicit +30")
+        reasons.append("H-2B mention; international hiring not confirmed")
 
     out_of_country_status = classify_out_of_country(combined)
     out_of_country = out_of_country_status in {"OUT_OF_COUNTRY_CONFIRMED", "OUT_OF_COUNTRY_POSSIBLE"}
@@ -205,8 +206,6 @@ def _detect_h2b_signals(job: dict[str, Any]) -> tuple[bool, bool, str, list[str]
         h2b_status = "OPEN"
     elif out_of_country_status == "IN_COUNTRY_ONLY":
         h2b_status = "FULL"
-    elif h2b_relevant:
-        h2b_status = "OPEN"
     else:
         h2b_status = "UNKNOWN"
 

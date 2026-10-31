@@ -1,6 +1,7 @@
 import base64
 import mimetypes
 import os
+import re
 import time
 from email.message import EmailMessage
 from pathlib import Path
@@ -123,11 +124,31 @@ def project_path(value: str) -> Path:
 
 
 def identify_job_category(job_title: str, description: str | None) -> str:
-    job_text = f"{job_title} {description or ''}".casefold()
-    for category, keywords in JOB_CATEGORIES.items():
-        if any(keyword in job_text for keyword in keywords):
-            return category
-    return "general hospitality, service, or seasonal work"
+    title_text = (job_title or "").casefold()
+    description_text = (description or "").casefold()
+
+    # Categorias específicas vêm antes das categorias mais genéricas.
+    category_priority = [
+        "ski_resort", "housekeeping", "restaurant_food_service",
+        "landscaping", "construction", "seafood_processing",
+        "amusement_recreation", "maintenance", "warehouse",
+        "cleaning", "farm_agriculture", "hotel_resort",
+    ]
+    scores: dict[str, int] = {}
+    for category in category_priority:
+        score = 0
+        for keyword in JOB_CATEGORIES[category]:
+            pattern = rf"(?<!\w){re.escape(keyword)}(?!\w)"
+            if re.search(pattern, title_text):
+                score += 3
+            if re.search(pattern, description_text):
+                score += 1
+        scores[category] = score
+
+    best_category = max(category_priority, key=lambda category: scores[category])
+    if scores[best_category] == 0:
+        return "general hospitality, service, or seasonal work"
+    return best_category
 
 
 def select_application_documents(job_category: str | None) -> tuple[Path, Path]:

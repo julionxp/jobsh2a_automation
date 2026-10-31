@@ -11,14 +11,14 @@ from automation.ia_send_email import (
     identify_job_category,
     send_email,
 )
-from core.database import Base, Session, engine
+from core.database import DBBaseModel, Session, engine
 from models.email_send_model import EmailSendModel
 from models.jobs_automation_model import JobAutomationModel
 
 
 async def send_pending_emails(send: bool) -> None:
     async with engine.begin() as connection:
-        await connection.run_sync(Base.metadata.create_all)
+        await connection.run_sync(DBBaseModel.metadata.create_all)
 
     daily_limit = int(os.getenv("DAILY_EMAIL_LIMIT", "400"))
     today_start = datetime.combine(datetime.now().date(), time.min)
@@ -110,7 +110,7 @@ async def send_pending_emails(send: bool) -> None:
 async def send_test_email(recipient: str) -> None:
     """Envia uma única vaga para o endereço de teste sem registrá-la como enviada."""
     async with engine.begin() as connection:
-        await connection.run_sync(Base.metadata.create_all)
+        await connection.run_sync(DBBaseModel.metadata.create_all)
 
     async with Session() as session:
         job = await session.scalar(
