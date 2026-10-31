@@ -69,7 +69,7 @@ JOB_CATEGORIES = {
         "custodial", "building cleaner",
     ),
     "farm_agriculture": (
-        "farm", "farmer", "agricultural", "agriculture", "harvest",
+        "farm", "farmer", "farmworker", "farm worker", "agricultural", "agriculture", "harvest",
         "orchard", "packing house", "packing", "nursery", "greenhouse",
         "livestock", "ranch", "field worker", "crop production",
     ),
@@ -147,7 +147,7 @@ def identify_job_category(job_title: str, description: str | None) -> str:
 
     best_category = max(category_priority, key=lambda category: scores[category])
     if scores[best_category] == 0:
-        return "general hospitality, service, or seasonal work"
+        return "general agricultural or seasonal work"
     return best_category
 
 
@@ -176,7 +176,7 @@ def generate_email(job_title: str, description: str | None) -> tuple[str, str]:
     employer_name = os.getenv("EMPLOYER_NAME", "Hiring Manager")
     location = os.getenv("LOCATION", "United States")
 
-    prompt = f"""You are writing a short job application email for a real person applying for a seasonal job in the United States.
+    prompt = f"""You are writing a short job application email for a real person applying for a H-2A agricultural seasonal job in the United States.
 
 Your goal is to write a natural, simple, professional email that sounds like it was written by a real applicant — NOT by an AI, recruiter, marketing professional, or corporate communications team.
 
@@ -196,8 +196,8 @@ Your goal is to write a natural, simple, professional email that sounds like it 
 - Do not sound desperate.
 - Do not mention sponsorship, immigration problems, financial need, or desperation.
 - The applicant is currently based in Brazil. Mention this naturally when relevant.
-- The applicant is interested in seasonal work in the United States.
-- Never invent experience, skills, qualifications, certifications, availability, or personal information that was not provided.
+- The applicant is interested in H-2A agricultural seasonal work in the United States.
+- Never invent experience, skills, qualifications, certifications, availability, or personal information that was not provided. Do not claim the employer sponsors or accepts overseas applicants unless the listing explicitly confirms it.
 - Never claim the applicant has experience simply because the job description requires it.
 - Do not say "I am the perfect candidate", "I would be an excellent fit", or similar phrases.
 
@@ -258,8 +258,8 @@ Location: {location}
 
 ## APPLICANT INFORMATION
 Name: {applicant_name}
-Current location: Brazils
-Documents attached: Resume and cover lettera
+Current location: Brazil
+Documents attached: Resume and cover letter
 """
 
     with genai.Client(api_key=api_key) as client:

@@ -32,6 +32,7 @@ class JobAutomationModel(DBBaseModel):
     worksite_state: Mapped[str | None] = mapped_column(String(100), nullable=True)
     positions_available: Mapped[int | None] = mapped_column(Integer, nullable=True)
     job_openings: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    h2a_relevant: Mapped[bool | None] = mapped_column(Boolean, nullable=True, default=True)
     h2b_relevant: Mapped[bool | None] = mapped_column(Boolean, nullable=True, default=None)
     out_of_country: Mapped[bool | None] = mapped_column(Boolean, nullable=True, default=None)
     h2b_status: Mapped[str | None] = mapped_column(String(50), nullable=True)
