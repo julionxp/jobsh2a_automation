@@ -1,18 +1,19 @@
-from core.configs import settings
-from core.database import engine
+from core.database import DBBaseModel, engine
 
 
 async def create_tables() -> None:
-    import models.__all_models
-    print('Criando as tabelas no banco de dados...')
+    # Importar os modelos registra suas tabelas no metadata.
+    import models.__all_models  # noqa: F401
 
-    async with engine.begin() as conn:
-        await conn.run_sync(settings.DBBaseModel.metadata.drop_all)
-        await conn.run_sync(settings.DBBaseModel.metadata.create_all)
-    print('Tabelas criadas com sucesso')
+    print("Criando as tabelas no banco de dados...")
+    async with engine.begin() as connection:
+        # create_all cria apenas tabelas ausentes; não apaga dados existentes.
+        await connection.run_sync(DBBaseModel.metadata.create_all)
+    print("Tabelas verificadas/criadas com sucesso.")
+    await engine.dispose()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import asyncio
 
     asyncio.run(create_tables())

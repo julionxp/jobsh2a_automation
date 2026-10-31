@@ -1,9 +1,26 @@
-assets/token.json
-assets/client_secret*.json
-
+# Environment and credentials
 .env
 .env.*
+!.env.example
+assets/token.json
+assets/token*.json
+assets/client_secret*.json
+*credentials*.json
 
+# Personal application documents (keep locally, never commit)
+assets/resumes/*.pdf
+assets/cover_letters/*.pdf
+
+# Runtime artifacts
+logs/*.log
+*.log
+__pycache__/
+*.py[cod]
+*$py.class
 venv/
 .venv/
-__pycache__/
+env/
+*.egg-info/
+dist/
+build/
+.vscode/

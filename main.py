@@ -18,8 +18,11 @@ def main() -> None:
             headless=args.headless,
         )
 
-    print("\n>>> EXTRAÇÃO CONCLUÍDA. INICIANDO ENVIO DE EMAILS...")
-    asyncio.run(send_pending_emails(send=True))
+    if args.send:
+        print("\n>>> EXTRAÇÃO CONCLUÍDA. ENVIANDO EMAILS AUTORIZADOS...")
+    else:
+        print("\n>>> EXTRAÇÃO CONCLUÍDA. MODO PREVIEW: nenhum email será enviado.")
+    asyncio.run(send_pending_emails(send=args.send))
 
 
 if __name__ == "__main__":
