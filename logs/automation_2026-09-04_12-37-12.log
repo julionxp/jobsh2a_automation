@@ -1,0 +1,528 @@
+================================================== 
+AUTOMACAO INICIADA 
+Data/Hora: 04/09/2026 12:37:12,37 
+================================================== 
+ Image jobs_automation-app Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 517B 0.0s done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from dockerfile
+#2 transferring dockerfile: 256B 0.0s done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/python:3.12-slim
+#3 ...
+
+#4 [auth] library/python:pull token for registry-1.docker.io
+#4 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/python:3.12-slim
+#3 DONE 1.2s
+
+#5 [internal] load .dockerignore
+#5 transferring context: 132B 0.0s done
+#5 DONE 0.0s
+
+#6 [1/5] FROM docker.io/library/python:3.12-slim@sha256:78387bc3881b8273120a12ebe6c1ab22b018ccc2c9adf565ae1ac9b536e184ea
+#6 resolve docker.io/library/python:3.12-slim@sha256:78387bc3881b8273120a12ebe6c1ab22b018ccc2c9adf565ae1ac9b536e184ea 0.0s done
+#6 DONE 0.0s
+
+#7 [internal] load build context
+#7 transferring context: 6.22kB 0.0s done
+#7 DONE 0.0s
+
+#8 [3/5] COPY requirements.txt ./
+#8 CACHED
+
+#9 [2/5] WORKDIR /app
+#9 CACHED
+
+#10 [4/5] RUN pip install --no-cache-dir -r requirements.txt     && python -m playwright install --with-deps chromium
+#10 CACHED
+
+#11 [5/5] COPY . .
+#11 DONE 0.1s
+
+#12 exporting to image
+#12 exporting layers
+#12 exporting layers 0.2s done
+#12 exporting manifest sha256:704f5b0dead4b8474a1242ecbcc312c8b34ad60e48c826079b7c5f4190bd7cd3 0.0s done
+#12 exporting config sha256:7e6d45a56b932b14e2915e08ffe334d799b1ac64630f68f8920b5c775f2e7c1d 0.0s done
+#12 exporting attestation manifest sha256:abb1407a36337560e4e2ee778509709ff62b05adb8738c59e61b8d735982dc91 0.0s done
+#12 exporting manifest list sha256:cc893f0d749253bcac396aac060cccc4f2ef9480597fa20ad3bbdd9e2011a3b3 0.0s done
+#12 naming to docker.io/library/jobs_automation-app:latest
+#12 naming to docker.io/library/jobs_automation-app:latest done
+#12 unpacking to docker.io/library/jobs_automation-app:latest 0.0s done
+#12 DONE 0.3s
+
+#13 resolving provenance for metadata file
+#13 DONE 0.0s
+ Image jobs_automation-app Built 
+ Container jobs_automation_app Recreate 
+ Container jobs_automation_app Recreated 
+Attaching to jobs_automation_app
+ Container jobs_automation_postgres Starting 
+ Container jobs_automation_postgres Started 
+ Container jobs_automation_postgres Waiting 
+ Container jobs_automation_postgres Healthy 
+ Container jobs_automation_app Starting 
+ Container jobs_automation_app Started 
+jobs_automation_app  | 
+jobs_automation_app  | ========================================
+jobs_automation_app  |        SEASONALJOBS AUTOMATION
+jobs_automation_app  | ========================================
+jobs_automation_app  | 
+jobs_automation_app  | >>> BUSCANDO VAGAS PELA API...
+jobs_automation_app  | >>> Buscando vagas 1 até 40...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 96)
+jobs_automation_app  | >>> Buscando vagas 41 até 80...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 96)
+jobs_automation_app  | >>> Buscando vagas 81 até 120...
+jobs_automation_app  | >>> API retornou 16 vagas (total disponível: 96)
+jobs_automation_app  | 
+jobs_automation_app  | >>> TOTAL DE VAGAS COLETADAS: 96
+jobs_automation_app  | >>> TOTAL DE REGISTROS GERADOS: 96
+jobs_automation_app  | 
+jobs_automation_app  | >>> BUSCANDO VAGAS PELA API...
+jobs_automation_app  | >>> Buscando vagas 1 até 40...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 161)
+jobs_automation_app  | >>> Buscando vagas 41 até 80...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 161)
+jobs_automation_app  | >>> Buscando vagas 81 até 120...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 161)
+jobs_automation_app  | >>> Buscando vagas 121 até 160...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 161)
+jobs_automation_app  | >>> Buscando vagas 161 até 200...
+jobs_automation_app  | >>> API retornou 1 vagas (total disponível: 161)
+jobs_automation_app  | 
+jobs_automation_app  | >>> TOTAL DE VAGAS COLETADAS: 161
+jobs_automation_app  | >>> TOTAL DE REGISTROS GERADOS: 161
+jobs_automation_app  | 
+jobs_automation_app  | >>> BUSCANDO VAGAS PELA API...
+jobs_automation_app  | >>> Buscando vagas 1 até 40...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 249)
+jobs_automation_app  | >>> Buscando vagas 41 até 80...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 249)
+jobs_automation_app  | >>> Buscando vagas 81 até 120...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 249)
+jobs_automation_app  | >>> Buscando vagas 121 até 160...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 249)
+jobs_automation_app  | >>> Buscando vagas 161 até 200...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 249)
+jobs_automation_app  | >>> Buscando vagas 201 até 240...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 249)
+jobs_automation_app  | >>> Buscando vagas 241 até 280...
+jobs_automation_app  | >>> API retornou 9 vagas (total disponível: 249)
+jobs_automation_app  | 
+jobs_automation_app  | >>> TOTAL DE VAGAS COLETADAS: 249
+jobs_automation_app  | >>> TOTAL DE REGISTROS GERADOS: 249
+jobs_automation_app  | 
+jobs_automation_app  | >>> BUSCANDO VAGAS PELA API...
+jobs_automation_app  | >>> Buscando vagas 1 até 40...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 273)
+jobs_automation_app  | >>> Buscando vagas 41 até 80...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 273)
+jobs_automation_app  | >>> Buscando vagas 81 até 120...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 273)
+jobs_automation_app  | >>> Buscando vagas 121 até 160...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 273)
+jobs_automation_app  | >>> Buscando vagas 161 até 200...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 273)
+jobs_automation_app  | >>> Buscando vagas 201 até 240...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 273)
+jobs_automation_app  | >>> Buscando vagas 241 até 280...
+jobs_automation_app  | >>> API retornou 33 vagas (total disponível: 273)
+jobs_automation_app  | 
+jobs_automation_app  | >>> TOTAL DE VAGAS COLETADAS: 273
+jobs_automation_app  | >>> TOTAL DE REGISTROS GERADOS: 273
+jobs_automation_app  | 
+jobs_automation_app  | >>> BUSCANDO VAGAS PELA API...
+jobs_automation_app  | >>> Buscando vagas 1 até 40...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 646)
+jobs_automation_app  | >>> Buscando vagas 41 até 80...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 646)
+jobs_automation_app  | >>> Buscando vagas 81 até 120...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 646)
+jobs_automation_app  | >>> Buscando vagas 121 até 160...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 646)
+jobs_automation_app  | >>> Buscando vagas 161 até 200...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 646)
+jobs_automation_app  | >>> Buscando vagas 201 até 240...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 646)
+jobs_automation_app  | >>> Buscando vagas 241 até 280...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 646)
+jobs_automation_app  | >>> Buscando vagas 281 até 320...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 646)
+jobs_automation_app  | >>> Buscando vagas 321 até 360...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 646)
+jobs_automation_app  | >>> Buscando vagas 361 até 400...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 646)
+jobs_automation_app  | >>> Buscando vagas 401 até 440...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 646)
+jobs_automation_app  | >>> Buscando vagas 441 até 480...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 646)
+jobs_automation_app  | >>> Buscando vagas 481 até 520...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 646)
+jobs_automation_app  | >>> Buscando vagas 521 até 560...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 646)
+jobs_automation_app  | >>> Buscando vagas 561 até 600...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 646)
+jobs_automation_app  | >>> Buscando vagas 601 até 640...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 646)
+jobs_automation_app  | >>> Buscando vagas 641 até 680...
+jobs_automation_app  | >>> API retornou 6 vagas (total disponível: 646)
+jobs_automation_app  | 
+jobs_automation_app  | >>> TOTAL DE VAGAS COLETADAS: 646
+jobs_automation_app  | >>> TOTAL DE REGISTROS GERADOS: 646
+jobs_automation_app  | 
+jobs_automation_app  | >>> BUSCANDO VAGAS PELA API...
+jobs_automation_app  | >>> Buscando vagas 1 até 40...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 368)
+jobs_automation_app  | >>> Buscando vagas 41 até 80...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 368)
+jobs_automation_app  | >>> Buscando vagas 81 até 120...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 368)
+jobs_automation_app  | >>> Buscando vagas 121 até 160...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 368)
+jobs_automation_app  | >>> Buscando vagas 161 até 200...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 368)
+jobs_automation_app  | >>> Buscando vagas 201 até 240...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 368)
+jobs_automation_app  | >>> Buscando vagas 241 até 280...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 368)
+jobs_automation_app  | >>> Buscando vagas 281 até 320...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 368)
+jobs_automation_app  | >>> Buscando vagas 321 até 360...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 368)
+jobs_automation_app  | >>> Buscando vagas 361 até 400...
+jobs_automation_app  | >>> API retornou 8 vagas (total disponível: 368)
+jobs_automation_app  | 
+jobs_automation_app  | >>> TOTAL DE VAGAS COLETADAS: 368
+jobs_automation_app  | >>> TOTAL DE REGISTROS GERADOS: 368
+jobs_automation_app  | 
+jobs_automation_app  | >>> BUSCANDO VAGAS PELA API...
+jobs_automation_app  | >>> Buscando vagas 1 até 40...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 77)
+jobs_automation_app  | >>> Buscando vagas 41 até 80...
+jobs_automation_app  | >>> API retornou 37 vagas (total disponível: 77)
+jobs_automation_app  | 
+jobs_automation_app  | >>> TOTAL DE VAGAS COLETADAS: 77
+jobs_automation_app  | >>> TOTAL DE REGISTROS GERADOS: 77
+jobs_automation_app  | 
+jobs_automation_app  | >>> BUSCANDO VAGAS PELA API...
+jobs_automation_app  | >>> Buscando vagas 1 até 40...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 443)
+jobs_automation_app  | >>> Buscando vagas 41 até 80...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 443)
+jobs_automation_app  | >>> Buscando vagas 81 até 120...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 443)
+jobs_automation_app  | >>> Buscando vagas 121 até 160...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 443)
+jobs_automation_app  | >>> Buscando vagas 161 até 200...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 443)
+jobs_automation_app  | >>> Buscando vagas 201 até 240...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 443)
+jobs_automation_app  | >>> Buscando vagas 241 até 280...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 443)
+jobs_automation_app  | >>> Buscando vagas 281 até 320...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 443)
+jobs_automation_app  | >>> Buscando vagas 321 até 360...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 443)
+jobs_automation_app  | >>> Buscando vagas 361 até 400...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 443)
+jobs_automation_app  | >>> Buscando vagas 401 até 440...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 443)
+jobs_automation_app  | >>> Buscando vagas 441 até 480...
+jobs_automation_app  | >>> API retornou 3 vagas (total disponível: 443)
+jobs_automation_app  | 
+jobs_automation_app  | >>> TOTAL DE VAGAS COLETADAS: 443
+jobs_automation_app  | >>> TOTAL DE REGISTROS GERADOS: 443
+jobs_automation_app  | 
+jobs_automation_app  | >>> BUSCANDO VAGAS PELA API...
+jobs_automation_app  | >>> Buscando vagas 1 até 40...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 231)
+jobs_automation_app  | >>> Buscando vagas 41 até 80...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 231)
+jobs_automation_app  | >>> Buscando vagas 81 até 120...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 231)
+jobs_automation_app  | >>> Buscando vagas 121 até 160...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 231)
+jobs_automation_app  | >>> Buscando vagas 161 até 200...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 231)
+jobs_automation_app  | >>> Buscando vagas 201 até 240...
+jobs_automation_app  | >>> API retornou 31 vagas (total disponível: 231)
+jobs_automation_app  | 
+jobs_automation_app  | >>> TOTAL DE VAGAS COLETADAS: 231
+jobs_automation_app  | >>> TOTAL DE REGISTROS GERADOS: 230
+jobs_automation_app  | 
+jobs_automation_app  | >>> BUSCANDO VAGAS PELA API...
+jobs_automation_app  | >>> Buscando vagas 1 até 40...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 106)
+jobs_automation_app  | >>> Buscando vagas 41 até 80...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 106)
+jobs_automation_app  | >>> Buscando vagas 81 até 120...
+jobs_automation_app  | >>> API retornou 26 vagas (total disponível: 106)
+jobs_automation_app  | 
+jobs_automation_app  | >>> TOTAL DE VAGAS COLETADAS: 106
+jobs_automation_app  | >>> TOTAL DE REGISTROS GERADOS: 106
+jobs_automation_app  | 
+jobs_automation_app  | >>> BUSCANDO VAGAS PELA API...
+jobs_automation_app  | >>> Buscando vagas 1 até 40...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 367)
+jobs_automation_app  | >>> Buscando vagas 41 até 80...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 367)
+jobs_automation_app  | >>> Buscando vagas 81 até 120...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 367)
+jobs_automation_app  | >>> Buscando vagas 121 até 160...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 367)
+jobs_automation_app  | >>> Buscando vagas 161 até 200...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 367)
+jobs_automation_app  | >>> Buscando vagas 201 até 240...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 367)
+jobs_automation_app  | >>> Buscando vagas 241 até 280...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 367)
+jobs_automation_app  | >>> Buscando vagas 281 até 320...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 367)
+jobs_automation_app  | >>> Buscando vagas 321 até 360...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 367)
+jobs_automation_app  | >>> Buscando vagas 361 até 400...
+jobs_automation_app  | >>> API retornou 7 vagas (total disponível: 367)
+jobs_automation_app  | 
+jobs_automation_app  | >>> TOTAL DE VAGAS COLETADAS: 367
+jobs_automation_app  | >>> TOTAL DE REGISTROS GERADOS: 367
+jobs_automation_app  | 
+jobs_automation_app  | >>> BUSCANDO VAGAS PELA API...
+jobs_automation_app  | >>> Buscando vagas 1 até 40...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 98)
+jobs_automation_app  | >>> Buscando vagas 41 até 80...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 98)
+jobs_automation_app  | >>> Buscando vagas 81 até 120...
+jobs_automation_app  | >>> API retornou 18 vagas (total disponível: 98)
+jobs_automation_app  | 
+jobs_automation_app  | >>> TOTAL DE VAGAS COLETADAS: 98
+jobs_automation_app  | >>> TOTAL DE REGISTROS GERADOS: 98
+jobs_automation_app  | 
+jobs_automation_app  | >>> BUSCANDO VAGAS PELA API...
+jobs_automation_app  | >>> Buscando vagas 1 até 40...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 1686)
+jobs_automation_app  | >>> Buscando vagas 41 até 80...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 1686)
+jobs_automation_app  | >>> Buscando vagas 81 até 120...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 1686)
+jobs_automation_app  | >>> Buscando vagas 121 até 160...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 1686)
+jobs_automation_app  | >>> Buscando vagas 161 até 200...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 1686)
+jobs_automation_app  | >>> Buscando vagas 201 até 240...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 1686)
+jobs_automation_app  | >>> Buscando vagas 241 até 280...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 1686)
+jobs_automation_app  | >>> Buscando vagas 281 até 320...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 1686)
+jobs_automation_app  | >>> Buscando vagas 321 até 360...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 1686)
+jobs_automation_app  | >>> Buscando vagas 361 até 400...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 1686)
+jobs_automation_app  | >>> Buscando vagas 401 até 440...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 1686)
+jobs_automation_app  | >>> Buscando vagas 441 até 480...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 1686)
+jobs_automation_app  | >>> Buscando vagas 481 até 520...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 1686)
+jobs_automation_app  | >>> Buscando vagas 521 até 560...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 1686)
+jobs_automation_app  | >>> Buscando vagas 561 até 600...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 1686)
+jobs_automation_app  | >>> Buscando vagas 601 até 640...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 1686)
+jobs_automation_app  | >>> Buscando vagas 641 até 680...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 1686)
+jobs_automation_app  | >>> Buscando vagas 681 até 720...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 1686)
+jobs_automation_app  | >>> Buscando vagas 721 até 760...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 1686)
+jobs_automation_app  | >>> Buscando vagas 761 até 800...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 1686)
+jobs_automation_app  | >>> Buscando vagas 801 até 840...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 1686)
+jobs_automation_app  | >>> Buscando vagas 841 até 880...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 1686)
+jobs_automation_app  | >>> Buscando vagas 881 até 920...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 1686)
+jobs_automation_app  | >>> Buscando vagas 921 até 960...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 1686)
+jobs_automation_app  | >>> Buscando vagas 961 até 1000...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 1686)
+jobs_automation_app  | >>> Buscando vagas 1001 até 1040...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 1686)
+jobs_automation_app  | >>> Buscando vagas 1041 até 1080...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 1686)
+jobs_automation_app  | >>> Buscando vagas 1081 até 1120...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 1686)
+jobs_automation_app  | >>> Buscando vagas 1121 até 1160...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 1686)
+jobs_automation_app  | >>> Buscando vagas 1161 até 1200...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 1686)
+jobs_automation_app  | >>> Buscando vagas 1201 até 1240...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 1686)
+jobs_automation_app  | >>> Buscando vagas 1241 até 1280...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 1686)
+jobs_automation_app  | >>> Buscando vagas 1281 até 1320...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 1686)
+jobs_automation_app  | >>> Buscando vagas 1321 até 1360...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 1686)
+jobs_automation_app  | >>> Buscando vagas 1361 até 1400...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 1686)
+jobs_automation_app  | >>> Buscando vagas 1401 até 1440...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 1686)
+jobs_automation_app  | >>> Buscando vagas 1441 até 1480...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 1686)
+jobs_automation_app  | >>> Buscando vagas 1481 até 1520...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 1686)
+jobs_automation_app  | >>> Buscando vagas 1521 até 1560...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 1686)
+jobs_automation_app  | >>> Buscando vagas 1561 até 1600...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 1686)
+jobs_automation_app  | >>> Buscando vagas 1601 até 1640...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 1686)
+jobs_automation_app  | >>> Buscando vagas 1641 até 1680...
+jobs_automation_app  | >>> API retornou 40 vagas (total disponível: 1686)
+jobs_automation_app  | >>> Buscando vagas 1681 até 1720...
+jobs_automation_app  | >>> API retornou 6 vagas (total disponível: 1686)
+jobs_automation_app  | 
+jobs_automation_app  | >>> TOTAL DE VAGAS COLETADAS: 1686
+jobs_automation_app  | >>> TOTAL DE REGISTROS GERADOS: 1686
+jobs_automation_app  | 
+jobs_automation_app  | >>> BUSCANDO VAGAS PELA API...
+jobs_automation_app  | >>> Buscando vagas 1 até 40...
+jobs_automation_app  | >>> API retornou 31 vagas (total disponível: 31)
+jobs_automation_app  | 
+jobs_automation_app  | >>> TOTAL DE VAGAS COLETADAS: 31
+jobs_automation_app  | >>> TOTAL DE REGISTROS GERADOS: 31
+jobs_automation_app  | 
+jobs_automation_app  | >>> VAGAS ENCONTRADAS: 3240
+jobs_automation_app  | Traceback (most recent call last):
+jobs_automation_app  |   File "/app/main.py", line 26, in <module>
+jobs_automation_app  |     main()
+jobs_automation_app  |   File "/app/main.py", line 14, in main
+jobs_automation_app  |     run(
+jobs_automation_app  |   File "/app/automation/jobs_automation.py", line 445, in run
+jobs_automation_app  |     database_future.result()
+jobs_automation_app  |   File "/usr/local/lib/python3.12/concurrent/futures/_base.py", line 456, in result
+jobs_automation_app  |     return self.__get_result()
+jobs_automation_app  |            ^^^^^^^^^^^^^^^^^^^
+jobs_automation_app  |   File "/usr/local/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+jobs_automation_app  |     raise self._exception
+jobs_automation_app  |   File "/app/automation/jobs_automation.py", line 279, in create_tables
+jobs_automation_app  |     async with engine.begin() as connection:
+jobs_automation_app  |                ^^^^^^^^^^^^^^
+jobs_automation_app  |   File "/usr/local/lib/python3.12/contextlib.py", line 210, in __aenter__
+jobs_automation_app  |     return await anext(self.gen)
+jobs_automation_app  |            ^^^^^^^^^^^^^^^^^^^^^
+jobs_automation_app  |   File "/usr/local/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/engine.py", line 1068, in begin
+jobs_automation_app  |     async with conn:
+jobs_automation_app  |                ^^^^
+jobs_automation_app  |   File "/usr/local/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/base.py", line 121, in __aenter__
+jobs_automation_app  |     return await self.start(is_ctxmanager=True)
+jobs_automation_app  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jobs_automation_app  |   File "/usr/local/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/engine.py", line 275, in start
+jobs_automation_app  |     await greenlet_spawn(self.sync_engine.connect)
+jobs_automation_app  |   File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 201, in greenlet_spawn
+jobs_automation_app  |     result = context.throw(*sys.exc_info())
+jobs_automation_app  |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jobs_automation_app  |   File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3295, in connect
+jobs_automation_app  |     return self._connection_cls(self)
+jobs_automation_app  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+jobs_automation_app  |   File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 144, in __init__
+jobs_automation_app  |     self._dbapi_connection = engine.raw_connection()
+jobs_automation_app  |                              ^^^^^^^^^^^^^^^^^^^^^^^
+jobs_automation_app  |   File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3319, in raw_connection
+jobs_automation_app  |     return self.pool.connect()
+jobs_automation_app  |            ^^^^^^^^^^^^^^^^^^^
+jobs_automation_app  |   File "/usr/local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 448, in connect
+jobs_automation_app  |     return _ConnectionFairy._checkout(self)
+jobs_automation_app  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jobs_automation_app  |   File "/usr/local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 1272, in _checkout
+jobs_automation_app  |     fairy = _ConnectionRecord.checkout(pool)
+jobs_automation_app  |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jobs_automation_app  |   File "/usr/local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 712, in checkout
+jobs_automation_app  |     rec = pool._do_get()
+jobs_automation_app  |           ^^^^^^^^^^^^^^
+jobs_automation_app  |   File "/usr/local/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 178, in _do_get
+jobs_automation_app  |     with util.safe_reraise():
+jobs_automation_app  |          ^^^^^^^^^^^^^^^^^^^
+jobs_automation_app  |   File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 122, in __exit__
+jobs_automation_app  |     raise exc_value.with_traceback(exc_tb)
+jobs_automation_app  |   File "/usr/local/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 176, in _do_get
+jobs_automation_app  |     return self._create_connection()
+jobs_automation_app  |            ^^^^^^^^^^^^^^^^^^^^^^^^^
+jobs_automation_app  |   File "/usr/local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 389, in _create_connection
+jobs_automation_app  |     return _ConnectionRecord(self)
+jobs_automation_app  |            ^^^^^^^^^^^^^^^^^^^^^^^
+jobs_automation_app  |   File "/usr/local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 674, in __init__
+jobs_automation_app  |     self.__connect()
+jobs_automation_app  |   File "/usr/local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 900, in __connect
+jobs_automation_app  |     with util.safe_reraise():
+jobs_automation_app  |          ^^^^^^^^^^^^^^^^^^^
+jobs_automation_app  |   File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 122, in __exit__
+jobs_automation_app  |     raise exc_value.with_traceback(exc_tb)
+jobs_automation_app  |   File "/usr/local/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 896, in __connect
+jobs_automation_app  |     self.dbapi_connection = connection = pool._invoke_creator(self)
+jobs_automation_app  |                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+jobs_automation_app  |   File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/create.py", line 667, in connect
+jobs_automation_app  |     return dialect.connect(*cargs_tup, **cparams)
+jobs_automation_app  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jobs_automation_app  |   File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 630, in connect
+jobs_automation_app  |     return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+jobs_automation_app  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jobs_automation_app  |   File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 955, in connect
+jobs_automation_app  |     await_only(creator_fn(*arg, **kw)),
+jobs_automation_app  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jobs_automation_app  |   File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 132, in await_only
+jobs_automation_app  |     return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+jobs_automation_app  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jobs_automation_app  |   File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 196, in greenlet_spawn
+jobs_automation_app  |     value = await result
+jobs_automation_app  |             ^^^^^^^^^^^^
+jobs_automation_app  |   File "/usr/local/lib/python3.12/site-packages/asyncpg/connection.py", line 2443, in connect
+jobs_automation_app  |     return await connect_utils._connect(
+jobs_automation_app  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jobs_automation_app  |   File "/usr/local/lib/python3.12/site-packages/asyncpg/connect_utils.py", line 1249, in _connect
+jobs_automation_app  |     raise last_error or exceptions.TargetServerAttributeNotMatched(
+jobs_automation_app  |   File "/usr/local/lib/python3.12/site-packages/asyncpg/connect_utils.py", line 1218, in _connect
+jobs_automation_app  |     conn = await _connect_addr(
+jobs_automation_app  |            ^^^^^^^^^^^^^^^^^^^^
+jobs_automation_app  |   File "/usr/local/lib/python3.12/site-packages/asyncpg/connect_utils.py", line 1054, in _connect_addr
+jobs_automation_app  |     return await __connect_addr(params, True, *args)
+jobs_automation_app  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jobs_automation_app  |   File "/usr/local/lib/python3.12/site-packages/asyncpg/connect_utils.py", line 1099, in __connect_addr
+jobs_automation_app  |     tr, pr = await connector
+jobs_automation_app  |              ^^^^^^^^^^^^^^^
+jobs_automation_app  |   File "/usr/local/lib/python3.12/site-packages/asyncpg/connect_utils.py", line 969, in _create_ssl_connection
+jobs_automation_app  |     tr, pr = await loop.create_connection(
+jobs_automation_app  |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jobs_automation_app  |   File "/usr/local/lib/python3.12/asyncio/base_events.py", line 1140, in create_connection
+jobs_automation_app  |     raise OSError('Multiple exceptions: {}'.format(
+jobs_automation_app  | OSError: Multiple exceptions: [Errno 111] Connect call failed ('::1', 5433, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 5433)
+[Kjobs_automation_app exited with code 1
+ Compose Stopping Aborting on container exit...
+ Container jobs_automation_app Stopping 
+ Container jobs_automation_app Stopped 
+
+ 
+================================================== 
+AUTOMACAO FINALIZADA 
+Exit Code: 1 
+Data/Hora: 04/09/2026 12:37:54,79 
+================================================== 
+ Container jobs_automation_app Stopping 
+ Container jobs_automation_app Stopped 
+ Container jobs_automation_app Removing 
+ Container jobs_automation_app Removed 
+ Container jobs_automation_postgres Stopping 
+ Container jobs_automation_postgres Stopped 
+ Container jobs_automation_postgres Removing 
+ Container jobs_automation_postgres Removed 
+ Network jobs_automation_default Removing 
+ Network jobs_automation_default Removed 

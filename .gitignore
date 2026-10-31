@@ -1,0 +1,9 @@
+assets/token.json
+assets/client_secret*.json
+
+.env
+.env.*
+
+venv/
+.venv/
+__pycache__/
